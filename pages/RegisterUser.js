@@ -3,8 +3,7 @@ import React from 'react';
 import { View, ScrollView, KeyboardAvoidingView, Alert } from 'react-native';
 import Mytextinput from './components/Mytextinput';
 import Mybutton from './components/Mybutton';
-import Realm from 'realm';
-let realm;
+import Realm, {BSON} from 'realm';
 
 export default class RegisterUser extends React.Component {
   constructor(props) {
@@ -13,8 +12,8 @@ export default class RegisterUser extends React.Component {
       user_name: '',
       user_contact: '',
       user_address: '',
+      userRealm: props.navigation?.getParam('userRealm')
     };
-    realm = new Realm({ path: 'UserDatabase.realm' });
   }
 
   register_user = () => {
@@ -22,17 +21,17 @@ export default class RegisterUser extends React.Component {
     const { user_name } = this.state;
     const { user_contact } = this.state;
     const { user_address } = this.state;
+
+    const realm = this?.state.userRealm;
+    const t = (new Date()).getTime();
+
     if (user_name) {
       if (user_contact) {
         if (user_address) {
-          realm.write(() => {
-            var ID =
-              realm.objects('user_details').sorted('user_id', true).length > 0
-                ? realm.objects('user_details').sorted('user_id', true)[0]
-                    .user_id + 1
-                : 1;
-            realm.create('user_details', {
-              user_id: ID,
+          realm?.write(() => {
+            realm?.create('user_details', {
+              _id: new BSON.ObjectID(),
+              user_id: t,
               user_name: that.state.user_name,
               user_contact: that.state.user_contact,
               user_address: that.state.user_address,

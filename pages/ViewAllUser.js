@@ -1,17 +1,17 @@
 /*Screen to view all the user*/
 import React from 'react';
 import { FlatList, Text, View } from 'react-native';
-import Realm from 'realm';
-let realm;
+import Realm, {BSON} from 'realm';
 
 export default class ViewAllUser extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       FlatListItems: [],
+      userRealm: props.navigation?.getParam('userRealm')
     };
-    realm = new Realm({ path: 'UserDatabase.realm' });
-    var user_details = realm.objects('user_details');
+    
+    var user_details = this.state.userRealm.objects('user_details');
     this.state = {
       FlatListItems: user_details,
     };
